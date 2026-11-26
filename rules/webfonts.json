@@ -1,0 +1,50 @@
+[
+  {
+    "id": 201,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "googlesans",
+      "resourceTypes": [
+        "font"
+      ],
+      "initiatorDomains": [
+        "gemini.google.com"
+      ]
+    }
+  },
+  {
+    "id": 202,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "productsans",
+      "resourceTypes": [
+        "font"
+      ],
+      "initiatorDomains": [
+        "gemini.google.com"
+      ]
+    }
+  },
+  {
+    "id": 203,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "roboto",
+      "resourceTypes": [
+        "font"
+      ],
+      "initiatorDomains": [
+        "gemini.google.com"
+      ]
+    }
+  }
+]

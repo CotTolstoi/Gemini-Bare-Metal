@@ -1,0 +1,21 @@
+[
+  {
+    "id": 301,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "||gstatic.com/*lottie",
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest",
+        "media",
+        "other"
+      ],
+      "initiatorDomains": [
+        "gemini.google.com"
+      ]
+    }
+  }
+]

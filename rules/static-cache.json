@@ -1,0 +1,32 @@
+[
+  {
+    "id": 101,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "responseHeaders": [
+        {
+          "header": "cache-control",
+          "operation": "set",
+          "value": "public, max-age=604800, immutable"
+        },
+        {
+          "header": "pragma",
+          "operation": "remove"
+        }
+      ]
+    },
+    "condition": {
+      "urlFilter": "||gstatic.com/",
+      "resourceTypes": [
+        "script",
+        "stylesheet",
+        "font",
+        "image"
+      ],
+      "initiatorDomains": [
+        "gemini.google.com"
+      ]
+    }
+  }
+]

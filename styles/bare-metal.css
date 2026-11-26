@@ -1,0 +1,305 @@
+/* ==========================================================================
+   Gemini Bare-Metal Lite v5.2.1 (Protected Rich Turns + Stealth & Bare-Metal)
+   - In "Stealth" preset only :root.gul-cv is active -> 100% native Gemini look
+   - Single-class root selectors (:root.gul-*) to minimize Recalculate Style
+   - 0.001ms animation/transition durations so Angular Material animationend /
+     transitionend hooks still fire cleanly (no stuck menus/dialogs)
+   - Viewport-safe content-visibility: auto excludes last 4 active turns AND
+     .gul-protected-turn (Canvas, video, audio, iframes, interactive widgets)
+   - Folded turns use content-visibility: hidden (skips KaTeX/code layout
+     completely without detaching Angular DOM nodes)
+   - Never overrides font-family on mat-icon, Material Symbols, or KaTeX
+   ========================================================================== */
+
+/* 1. ANGULAR-SAFE FX KILL (Disabled in Stealth Mode) */
+:root.gul-no-fx *,
+:root.gul-no-fx ::before,
+:root.gul-no-fx ::after {
+  animation-duration: 0.001ms !important;
+  animation-delay: 0ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  transition-delay: 0ms !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  will-change: auto !important;
+}
+
+:root.gul-no-fx {
+  scroll-behavior: auto !important;
+}
+
+:root.gul-no-fx .mat-ripple-element,
+:root.gul-no-fx .mat-mdc-button-ripple,
+:root.gul-no-fx .mat-mdc-button-persistent-ripple,
+:root.gul-no-fx .mdc-button__ripple,
+:root.gul-no-fx .mdc-icon-button__ripple,
+:root.gul-no-fx .mdc-line-ripple,
+:root.gul-no-fx .mat-mdc-form-field-focus-overlay {
+  display: none !important;
+}
+
+:root.gul-no-fx body,
+:root.gul-no-fx main,
+:root.gul-no-fx header,
+:root.gul-no-fx nav,
+:root.gul-no-fx aside,
+:root.gul-no-fx input-container,
+:root.gul-no-fx input-area-v2,
+:root.gul-no-fx .input-area-container,
+:root.gul-no-fx .input-gradient,
+:root.gul-no-fx .bottom-container,
+:root.gul-no-fx .gradient-background,
+:root.gul-no-fx .horizontal-scroll-wrapper,
+:root.gul-no-fx .table-block {
+  background-image: none !important;
+  mask-image: none !important;
+  -webkit-mask-image: none !important;
+}
+
+:root.gul-no-fx .horizontal-scroll-wrapper::before,
+:root.gul-no-fx .horizontal-scroll-wrapper::after,
+:root.gul-no-fx .table-fade {
+  display: none !important;
+}
+
+:root.gul-no-fx .hello-text,
+:root.gul-no-fx .greeting,
+:root.gul-no-fx h1 {
+  -webkit-text-fill-color: unset !important;
+  background-clip: border-box !important;
+  -webkit-background-clip: border-box !important;
+}
+
+/* 2. CLEAN MINIMALIST FLAT GEOMETRY (Disabled in Stealth Mode) */
+:root.gul-flat {
+  scrollbar-width: thin !important;
+}
+
+:root.gul-flat .mat-mdc-menu-panel,
+:root.gul-flat .mat-mdc-dialog-surface,
+:root.gul-flat pre,
+:root.gul-flat code-block {
+  border-radius: 6px !important;
+  border: 1px solid rgba(140, 150, 168, 0.26) !important;
+}
+
+:root.gul-flat bard-sidenav,
+:root.gul-flat side-navigation-v2 {
+  border-right: 1px solid rgba(140, 150, 168, 0.22) !important;
+}
+
+:root.gul-flat .user-query-bubble-with-background,
+:root.gul-flat .query-content {
+  border-radius: 6px !important;
+  border: 1px solid rgba(140, 150, 168, 0.22) !important;
+}
+
+:root.gul-flat button,
+:root.gul-flat .conversation {
+  border-radius: 5px !important;
+}
+
+:root.gul-flat .conversation:hover,
+:root.gul-flat a.conversation:hover {
+  background-color: rgba(140, 150, 168, 0.12) !important;
+}
+
+/* 3. SLIM SINGLE-BORDER COMPACT BOTTOM INPUT BAR (Disabled in Stealth Mode)
+   - Only overrides vertical margin/padding so Gemini's horizontal auto-centering
+     (margin-inline: auto) in New Chat / zero-state stays 100% centered */
+:root.gul-compact .bottom-container,
+:root.gul-compact input-container,
+:root.gul-compact input-area-v2 {
+  padding-top: 2px !important;
+  padding-bottom: 6px !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  min-height: 0 !important;
+  border: none !important;
+}
+
+:root.gul-compact .input-area-container,
+:root.gul-compact .text-input-field-main-area,
+:root.gul-compact .text-input-field_textarea-wrapper,
+:root.gul-compact .input-buttons-wrapper-bottom,
+:root.gul-compact rich-textarea {
+  border: none !important;
+  outline: none !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  min-height: 0 !important;
+}
+
+:root.gul-compact .text-input-field {
+  padding: 5px 10px !important;
+  min-height: 40px !important;
+  gap: 6px !important;
+  border: none !important;
+  outline: none !important;
+}
+
+:root.gul-compact rich-textarea .ql-editor {
+  padding: 5px 6px !important;
+  min-height: 24px !important;
+  line-height: 1.4 !important;
+}
+
+:root.gul-compact hallucination-disclaimer,
+:root.gul-compact .disclaimer-container,
+:root.gul-compact .bottom-disclaimer {
+  display: none !important;
+}
+
+/* 4. OPTIONAL WIDE CHAT MODE (Disabled in Stealth Mode) */
+:root.gul-wide .conversation-container,
+:root.gul-wide .input-area-container,
+:root.gul-wide user-query,
+:root.gul-wide model-response {
+  max-width: min(1240px, 94vw) !important;
+}
+
+/* 5. SAFE SYSTEM FONTS (Disabled in Stealth Mode — never touches mat-icon or KaTeX) */
+:root.gul-sys-fonts body,
+:root.gul-sys-fonts p,
+:root.gul-sys-fonts li,
+:root.gul-sys-fonts td,
+:root.gul-sys-fonts th,
+:root.gul-sys-fonts h1,
+:root.gul-sys-fonts h2,
+:root.gul-sys-fonts h3,
+:root.gul-sys-fonts h4,
+:root.gul-sys-fonts input,
+:root.gul-sys-fonts textarea,
+:root.gul-sys-fonts .ql-editor {
+  font-family: "Segoe UI", system-ui, -apple-system, Tahoma, Arial, sans-serif !important;
+}
+
+:root.gul-sys-fonts p,
+:root.gul-sys-fonts li,
+:root.gul-sys-fonts td,
+:root.gul-sys-fonts th,
+:root.gul-sys-fonts h1,
+:root.gul-sys-fonts h2,
+:root.gul-sys-fonts h3,
+:root.gul-sys-fonts h4 {
+  text-rendering: optimizeSpeed !important;
+}
+
+:root.gul-sys-fonts pre,
+:root.gul-sys-fonts code {
+  font-family: "Cascadia Mono", Consolas, "Courier New", monospace !important;
+}
+
+/* 6. VIEWPORT-SAFE LAYOUT & PAINT ISOLATION (ACTIVE in both Stealth & Bare-Metal)
+   - Visually 100% invisible: skips Layout/Paint for off-screen older turns
+   - Never applies content-visibility: auto to the last 4 active turns OR
+     protected turns (.gul-protected-turn: Canvas, video, audio, iframes,
+     forms, active focus/selection)
+   - Uses contain-intrinsic-size: auto none auto 480px so Chromium remembers
+     exact rendered height after first pass (stable scrollbar) */
+:root.gul-cv .conversation-container:not(:nth-last-child(-n+4)):not(.gul-recent-turn):not(.gul-protected-turn) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto none auto 480px;
+}
+
+/* Lightweight layout/style containment on heavy sub-blocks without clipping menus */
+:root.gul-cv model-response .table-block,
+:root.gul-cv model-response .horizontal-scroll-wrapper,
+:root.gul-cv model-response code-block,
+:root.gul-cv model-response pre,
+:root.gul-cv .katex-display {
+  contain: layout style;
+}
+
+:root.gul-cv .conversation-items-container .conversation {
+  content-visibility: auto;
+  contain-intrinsic-size: auto none auto 34px;
+}
+
+/* 7. HIDE PURELY DECORATIVE FLUFF (Disabled in Stealth Mode) */
+:root.gul-hide-decor lottie-player,
+:root.gul-hide-decor .bard-avatar,
+:root.gul-hide-decor .avatar-gutter,
+:root.gul-hide-decor .response-avatar,
+:root.gul-hide-decor .sparkle-icon-container,
+:root.gul-hide-decor .zero-state-illustration {
+  display: none !important;
+}
+
+/* 8. NON-DESTRUCTIVE SMART HISTORY FOLDING (Disabled in Stealth Mode)
+   - Uses content-visibility: hidden on folded children so Blink skips
+     all KaTeX/code/table layout & paint while keeping DOM 100% attached */
+.gul-folded-turn {
+  position: relative !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  max-height: 32px !important;
+  overflow: hidden !important;
+  border: 1px dashed rgba(140, 150, 168, 0.35) !important;
+  border-radius: 5px !important;
+  margin: 4px 0 !important;
+  padding: 0 !important;
+  opacity: 0.86 !important;
+  cursor: pointer !important;
+  contain: layout style !important;
+  content-visibility: auto !important;
+  contain-intrinsic-size: auto none auto 32px !important;
+}
+
+.gul-folded-turn > *:not(.gul-fold-bar) {
+  content-visibility: hidden !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+
+.gul-fold-bar {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 30px !important;
+  line-height: 30px !important;
+  padding: 0 10px !important;
+  font-size: 12px !important;
+  font-family: "Segoe UI", system-ui, Tahoma, Arial, sans-serif !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  z-index: 2 !important;
+  background: rgba(140, 150, 168, 0.12) !important;
+  color: inherit !important;
+  user-select: none !important;
+}
+
+.gul-fold-bar:hover {
+  background: rgba(140, 150, 168, 0.22) !important;
+}
+
+#gul-fold-toolbar {
+  position: fixed;
+  bottom: 8px;
+  right: 12px;
+  z-index: 9999;
+  font-family: "Segoe UI", system-ui, Tahoma, Arial, sans-serif;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 5px;
+  border: 1px solid rgba(140, 150, 168, 0.45);
+  background: #1c1e21;
+  color: #e4e6eb;
+  cursor: pointer;
+  user-select: none;
+}
+
+#gul-fold-toolbar:hover {
+  background: #2b2f36;
+}

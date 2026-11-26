@@ -1,0 +1,67 @@
+{
+  "manifest_version": 3,
+  "name": "Gemini Bare-Metal Lite (Chromium x64)",
+  "version": "5.2.1",
+  "description": "Bare-Metal v5.2 для gemini.google.com у x64 Chromium: захист ходів із Canvas, відео, аудіо й інтерактивними елементами, пресети «Непомітний» і «Bare-Metal», безпечний C++ DNR (без блокування BotGuard/WAA) та zero-leak згортання історії.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": [
+    "storage",
+    "declarativeNetRequest"
+  ],
+  "host_permissions": [
+    "https://gemini.google.com/*",
+    "https://www.gstatic.com/*",
+    "https://fonts.gstatic.com/*",
+    "https://ssl.gstatic.com/*"
+  ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "gemini_telemetry_blocker",
+        "enabled": true,
+        "path": "rules/telemetry.json"
+      },
+      {
+        "id": "gemini_static_cache",
+        "enabled": true,
+        "path": "rules/static-cache.json"
+      },
+      {
+        "id": "gemini_webfont_blocker",
+        "enabled": true,
+        "path": "rules/webfonts.json"
+      },
+      {
+        "id": "gemini_decor_blocker",
+        "enabled": true,
+        "path": "rules/decor.json"
+      }
+    ]
+  },
+  "action": {
+    "default_title": "Gemini Bare-Metal v5.2.1",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://gemini.google.com/*"
+      ],
+      "css": [
+        "styles/bare-metal.css"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_start"
+    }
+  ]
+}

@@ -33,24 +33,101 @@
     }
   };
 
-  const PRESET_META = {
-    stealth: {
-      label: 'Непомітний',
-      desc: '100% рідний вигляд Gemini: блокує лише телеметрію, кешує gstatic.com та ізолює позаекранний рендеринг.'
+  const I18N = {
+    en: {
+      masterEnable: 'Enable optimization',
+      presetTitle: 'Mode (preset)',
+      presetStealthBtn: 'Stealth',
+      presetBareBtn: 'Bare-Metal',
+      presetLabels: { stealth: 'Stealth', 'bare-metal': 'Bare-Metal', custom: 'Custom' },
+      presetDescs: {
+        stealth: '100% native Gemini look: blocks telemetry only, caches gstatic.com, and isolates off-screen rendering.',
+        'bare-metal': 'Maximum speed: clean flat UI, system fonts, no heavy FX, and smart folding for old turns.',
+        custom: 'Custom combination of toggles. Click a preset button above to restore a built-in profile.'
+      },
+      sectionInvisible: 'Invisible acceleration (zero visual changes)',
+      optTelemetry: 'Block telemetry via C++ DNR (BotGuard/WAA safe)',
+      optCache: 'Force 7-day SSD cache for gstatic.com static assets',
+      optCv: 'Off-screen content-visibility: auto (last 4 turns protected)',
+      optProtectRich: 'Protect turns with Canvas, video, audio & interactive widgets',
+      sectionVisual: 'Visual stripping & Bare-Metal UI',
+      optNoFx: 'Instant UI: no shadows, blur, gradients, or ripples (Angular-safe)',
+      optFlatUi: 'Clean flat UI (6px corners, crisp 1px borders)',
+      optCompact: 'Compact bottom input bar (hide footer disclaimer)',
+      optWide: 'Wide chat layout (better for code blocks & tables)',
+      optSysFonts: 'System fonts + block web fonts (icons & KaTeX intact)',
+      optHideDecor: 'Hide decorative avatars, illustrations & Lottie animations',
+      optFoldOld: 'Fold older turns into compact bars (content-visibility: hidden)',
+      optKeepOpen: 'Keep expanded:',
+      keep3: 'Last 3',
+      keep6: 'Last 6',
+      keep10: 'Last 10',
+      keep15: 'Last 15',
+      optUnfoldFind: 'Auto-expand folded turns on Ctrl+F search',
+      btnRescan: 'Rescan',
+      rescanTitle: 'Rescan active chat',
+      reloadHint: 'Font/Lottie network rules changed — reload the tab (F5) to fully restore native assets.',
+      footer: 'Alt+Shift+E — toggle history folding · 0 background processes.',
+      openGeminiHint: 'Open gemini.google.com for live stats',
+      dnrLine: (t, c, f) => `C++ DNR: Telemetry ${t ? 'ON' : 'OFF'} · Cache ${c ? 'ON' : 'OFF'} · Fonts ${f ? 'BLOCK' : 'NATIVE'}`,
+      liveStats: (s) => {
+        const modeDetail = s.foldedTurns > 0
+          ? `folded ${s.foldedTurns}`
+          : `isolated ${s.isolatedTurns || 0}`;
+        const guardPart = s.protectedTurns > 0 ? ` · guarded ${s.protectedTurns}` : '';
+        return `Turns: ${s.totalTurns} (${modeDetail}${guardPart}) · DOM: ${s.domNodes}`;
+      }
     },
-    'bare-metal': {
-      label: 'Bare-Metal',
-      desc: 'Максимальна швидкість: оголений плоский UI, системні шрифти, без ефектів і зі згортанням старих ходів.'
-    },
-    custom: {
-      label: 'Власний',
-      desc: 'Індивідуальна комбінація параметрів. Натисніть кнопку вище, щоб повернутися до готового пресету.'
+    uk: {
+      masterEnable: 'Увімкнути оптимізацію',
+      presetTitle: 'Режим роботи (пресет)',
+      presetStealthBtn: 'Непомітний',
+      presetBareBtn: 'Bare-Metal',
+      presetLabels: { stealth: 'Непомітний', 'bare-metal': 'Bare-Metal', custom: 'Власний' },
+      presetDescs: {
+        stealth: '100% рідний вигляд Gemini: блокує лише телеметрію, кешує gstatic.com та ізолює позаекранний рендеринг.',
+        'bare-metal': 'Максимальна швидкість: оголений плоский UI, системні шрифти, без ефектів і зі згортанням старих ходів.',
+        custom: 'Індивідуальна комбінація параметрів. Натисніть кнопку вище, щоб повернутися до готового пресету.'
+      },
+      sectionInvisible: 'Невидиме прискорення (без зміни вигляду)',
+      optTelemetry: 'Блокувати телеметрію в C++ DNR (BotGuard/WAA захищено)',
+      optCache: 'Примусовий SSD-кеш статики gstatic.com (7 днів)',
+      optCv: 'Ізоляція content-visibility: auto (4 останні ходи захищені)',
+      optProtectRich: 'Захищати ходи з Canvas, відео, аудіо та інтерактивними елементами',
+      sectionVisual: 'Візуальне спрощення та Bare-Metal UI',
+      optNoFx: 'Миттєвий UI без тіней, блюру, градієнтів і риплів (Angular-safe)',
+      optFlatUi: 'Охайний плоский UI (6px скруглень, тонкі рамки 1px)',
+      optCompact: 'Компактна нижня панель вводу (без підпису внизу)',
+      optWide: 'Широкий режим чату (зручніше для коду й таблиць)',
+      optSysFonts: 'Системні шрифти + блок веб-шрифтів (іконки й KaTeX цілі)',
+      optHideDecor: 'Приховати декоративні аватари, ілюстрації та Lottie',
+      optFoldOld: 'Згортати старі повідомлення у плашки (content-visibility: hidden)',
+      optKeepOpen: 'Залишати відкритими:',
+      keep3: 'Останні 3',
+      keep6: 'Останні 6',
+      keep10: 'Останні 10',
+      keep15: 'Останні 15',
+      optUnfoldFind: 'Авто-розгортати при пошуку Ctrl+F',
+      btnRescan: 'Оновити',
+      rescanTitle: 'Пересканувати активний чат',
+      reloadHint: 'Мережеві правила шрифтів/Lottie змінено — оновіть вкладку (F5), щоб повністю повернути рідні ресурси.',
+      footer: 'Alt+Shift+E — розгорнути/згорнути історію · 0 фонових процесів.',
+      openGeminiHint: 'Відкрийте gemini.google.com для метрик',
+      dnrLine: (t, c, f) => `C++ DNR: Телеметрія ${t ? 'ON' : 'OFF'} · Кеш ${c ? 'ON' : 'OFF'} · Шрифти ${f ? 'БЛОК' : 'РІДНІ'}`,
+      liveStats: (s) => {
+        const modeDetail = s.foldedTurns > 0
+          ? `згорн. ${s.foldedTurns}`
+          : `ізол. ${s.isolatedTurns || 0}`;
+        const guardPart = s.protectedTurns > 0 ? ` · зах. ${s.protectedTurns}` : '';
+        return `Ходів: ${s.totalTurns} (${modeDetail}${guardPart}) · DOM: ${s.domNodes}`;
+      }
     }
   };
 
   const DEFAULTS = Object.assign(
     {
       enabled: true,
+      language: 'en',
       preset: 'bare-metal',
       protectRichTurns: true,
       unfoldOnFind: true,
@@ -76,8 +153,21 @@
   const presetBadge = document.getElementById('presetBadge');
   const presetDesc = document.getElementById('presetDesc');
   const reloadHint = document.getElementById('reloadHint');
+  const langEnBtn = document.getElementById('langEn');
+  const langUkBtn = document.getElementById('langUk');
 
+  let currentLang = 'en';
   let lastNetVisualState = null;
+  let lastStats = null;
+  let lastDnrFlags = { t: true, c: true, f: true };
+
+  function normalizeLanguage(lang) {
+    return lang === 'uk' ? 'uk' : 'en';
+  }
+
+  function getPack() {
+    return currentLang === 'uk' ? I18N.uk : I18N.en;
+  }
 
   function detectPreset(s) {
     const names = Object.keys(PRESETS);
@@ -104,8 +194,32 @@
       if (typeof raw.blockTelemetry !== 'boolean') merged.blockTelemetry = raw.blockNetwork;
       if (typeof raw.forceStaticCache !== 'boolean') merged.forceStaticCache = raw.blockNetwork;
     }
+    merged.language = normalizeLanguage(merged.language);
     merged.preset = detectPreset(merged);
     return merged;
+  }
+
+  function applyTranslations(lang) {
+    currentLang = normalizeLanguage(lang);
+    document.documentElement.lang = currentLang;
+    const pack = getPack();
+
+    const nodes = document.querySelectorAll('[data-i18n]');
+    for (let i = 0; i < nodes.length; i++) {
+      const key = nodes[i].getAttribute('data-i18n');
+      if (key && typeof pack[key] === 'string') {
+        nodes[i].textContent = pack[key];
+      }
+    }
+
+    if (rescanBtn) rescanBtn.title = pack.rescanTitle;
+    if (langEnBtn) langEnBtn.classList.toggle('active', currentLang === 'en');
+    if (langUkBtn) langUkBtn.classList.toggle('active', currentLang === 'uk');
+
+    if (dnrStatEl) {
+      dnrStatEl.textContent = pack.dnrLine(lastDnrFlags.t, lastDnrFlags.c, lastDnrFlags.f);
+    }
+    renderLiveStats(lastStats);
   }
 
   function syncDnrRulesets(state, isUserChange) {
@@ -124,6 +238,8 @@
     (wantWebfonts ? enableRulesetIds : disableRulesetIds).push(RULESET_WEBFONTS);
     (wantDecor ? enableRulesetIds : disableRulesetIds).push(RULESET_DECOR);
 
+    lastDnrFlags = { t: wantTelemetry, c: wantCache, f: wantWebfonts };
+
     const netVisualSig = `${wantWebfonts}:${wantDecor}`;
     if (isUserChange && lastNetVisualState !== null && lastNetVisualState !== netVisualSig) {
       if (reloadHint) reloadHint.classList.add('visible');
@@ -134,34 +250,33 @@
       { enableRulesetIds, disableRulesetIds },
       () => {
         if (dnrStatEl) {
-          const t = wantTelemetry ? 'ON' : 'OFF';
-          const c = wantCache ? 'ON' : 'OFF';
-          const f = wantWebfonts ? 'БЛОК' : 'РІДНІ';
-          dnrStatEl.textContent = `C++ DNR: Телеметрія ${t} · Кеш ${c} · Шрифти ${f}`;
+          dnrStatEl.textContent = getPack().dnrLine(wantTelemetry, wantCache, wantWebfonts);
         }
       }
     );
   }
 
   function updatePresetUi(presetName) {
-    const meta = PRESET_META[presetName] || PRESET_META.custom;
+    const pack = getPack();
+    const key = presetName === 'stealth' || presetName === 'bare-metal' ? presetName : 'custom';
     if (presetBadge) {
-      presetBadge.textContent = meta.label;
-      presetBadge.className = 'preset-pill' + (presetName === 'stealth' ? ' stealth' : presetName === 'bare-metal' ? ' bare-metal' : '');
+      presetBadge.textContent = pack.presetLabels[key];
+      presetBadge.className = 'preset-pill' + (key === 'stealth' ? ' stealth' : key === 'bare-metal' ? ' bare-metal' : '');
     }
     if (presetDesc) {
-      presetDesc.textContent = meta.desc;
+      presetDesc.textContent = pack.presetDescs[key];
     }
     if (btnStealth) {
-      btnStealth.classList.toggle('active-stealth', presetName === 'stealth');
+      btnStealth.classList.toggle('active-stealth', key === 'stealth');
     }
     if (btnBareMetal) {
-      btnBareMetal.classList.toggle('active-bare', presetName === 'bare-metal');
+      btnBareMetal.classList.toggle('active-bare', key === 'bare-metal');
     }
   }
 
   function readStateFromUi() {
     const state = {
+      language: currentLang,
       keepTurns: Number(keepTurnsEl.value) || 6
     };
     checkboxes.forEach((id) => {
@@ -173,6 +288,7 @@
   }
 
   function syncUiState(state, isUserChange) {
+    applyTranslations(state.language);
     checkboxes.forEach((id) => {
       const el = document.getElementById(id);
       if (el) el.checked = Boolean(state[id]);
@@ -198,18 +314,23 @@
     });
   }
 
+  function setLanguage(lang) {
+    const normalized = normalizeLanguage(lang);
+    if (normalized === currentLang) return;
+    applyTranslations(normalized);
+    updatePresetUi(detectPreset(readStateFromUi()));
+    chrome.storage.local.set({ language: normalized });
+  }
+
   function renderLiveStats(stats) {
+    lastStats = stats;
     if (!liveStatEl) return;
+    const pack = getPack();
     if (!stats || typeof stats.totalTurns !== 'number') {
-      liveStatEl.textContent = 'Відкрийте gemini.google.com для метрик';
+      liveStatEl.textContent = pack.openGeminiHint;
       return;
     }
-    const modeDetail = stats.foldedTurns > 0
-      ? `згорн. ${stats.foldedTurns}`
-      : `ізол. ${stats.isolatedTurns || 0}`;
-    const guardPart = stats.protectedTurns > 0 ? ` · зах. ${stats.protectedTurns}` : '';
-    liveStatEl.textContent =
-      `Ходів: ${stats.totalTurns} (${modeDetail}${guardPart}) · DOM: ${stats.domNodes}`;
+    liveStatEl.textContent = pack.liveStats(stats);
   }
 
   function queryActiveTab(messageType) {
@@ -235,12 +356,10 @@
     syncUiState(state, false);
   });
 
-  if (btnStealth) {
-    btnStealth.addEventListener('click', () => applyPreset('stealth'));
-  }
-  if (btnBareMetal) {
-    btnBareMetal.addEventListener('click', () => applyPreset('bare-metal'));
-  }
+  if (langEnBtn) langEnBtn.addEventListener('click', () => setLanguage('en'));
+  if (langUkBtn) langUkBtn.addEventListener('click', () => setLanguage('uk'));
+  if (btnStealth) btnStealth.addEventListener('click', () => applyPreset('stealth'));
+  if (btnBareMetal) btnBareMetal.addEventListener('click', () => applyPreset('bare-metal'));
 
   checkboxes.forEach((id) => {
     const el = document.getElementById(id);

@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Gemini Bare-Metal v5.2.1</title>
+  <title>Gemini Bare-Metal v5.3</title>
   <style>
     * { box-sizing: border-box; }
     body {
       margin: 0;
       padding: 10px 12px;
-      width: 326px;
+      width: 332px;
       font-family: "Segoe UI", system-ui, Tahoma, Arial, sans-serif;
       font-size: 12px;
       background: #141517;
@@ -23,6 +23,35 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 6px;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .lang-switch {
+      display: inline-flex;
+      border: 1px solid #3d434c;
+      border-radius: 3px;
+      overflow: hidden;
+      background: #1c1e21;
+    }
+    button.lang-btn {
+      background: transparent;
+      color: #9aa0a6;
+      border: none;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 1px 5px;
+      cursor: pointer;
+    }
+    button.lang-btn:hover {
+      color: #e4e6eb;
+    }
+    button.lang-btn.active {
+      background: #333a45;
+      color: #ffffff;
     }
     .badge {
       font-size: 10px;
@@ -208,119 +237,125 @@
 <body>
   <h1>
     <span>Gemini Bare-Metal</span>
-    <span class="badge">v5.2.1 Fix</span>
+    <span class="header-right">
+      <span class="lang-switch" role="group" aria-label="Language">
+        <button type="button" class="lang-btn active" id="langEn" data-lang="en">EN</button>
+        <button type="button" class="lang-btn" id="langUk" data-lang="uk">UK</button>
+      </span>
+      <span class="badge">v5.3</span>
+    </span>
   </h1>
 
   <label class="row master">
     <input type="checkbox" id="enabled">
-    <span>Увімкнути оптимізацію</span>
+    <span data-i18n="masterEnable">Enable optimization</span>
   </label>
 
   <div id="options-group">
     <div class="preset-box">
       <div class="preset-header">
-        <span>Режим роботи (пресет)</span>
+        <span data-i18n="presetTitle">Mode (preset)</span>
         <span class="preset-pill" id="presetBadge">Bare-Metal</span>
       </div>
       <div class="preset-buttons">
-        <button type="button" class="preset-btn" id="btnStealth">Непомітний</button>
-        <button type="button" class="preset-btn" id="btnBareMetal">Bare-Metal</button>
+        <button type="button" class="preset-btn" id="btnStealth" data-i18n="presetStealthBtn">Stealth</button>
+        <button type="button" class="preset-btn" id="btnBareMetal" data-i18n="presetBareBtn">Bare-Metal</button>
       </div>
       <div class="preset-desc" id="presetDesc">
-        Максимальна швидкість: оголений плоский UI, системні шрифти й згортання історії.
+        Maximum speed: clean flat UI, system fonts, no heavy FX, and smart folding for old turns.
       </div>
     </div>
 
-    <div class="section-label">Невидиме прискорення (без зміни вигляду)</div>
+    <div class="section-label" data-i18n="sectionInvisible">Invisible acceleration (zero visual changes)</div>
 
     <label class="row">
       <input type="checkbox" id="blockTelemetry">
-      <span>Блокувати телеметрію в C++ DNR (BotGuard/WAA захищено)</span>
+      <span data-i18n="optTelemetry">Block telemetry via C++ DNR (BotGuard/WAA safe)</span>
     </label>
 
     <label class="row">
       <input type="checkbox" id="forceStaticCache">
-      <span>Примусовий SSD-кеш статики gstatic.com (7 днів)</span>
+      <span data-i18n="optCache">Force 7-day SSD cache for gstatic.com static assets</span>
     </label>
 
     <label class="row">
       <input type="checkbox" id="contentVisibility">
-      <span>Ізоляція content-visibility: auto (4 останні ходи захищені)</span>
+      <span data-i18n="optCv">Off-screen content-visibility: auto (last 4 turns protected)</span>
     </label>
 
     <label class="row">
       <input type="checkbox" id="protectRichTurns">
-      <span>Захищати ходи з Canvas, відео, аудіо та інтерактивними елементами</span>
+      <span data-i18n="optProtectRich">Protect turns with Canvas, video, audio &amp; interactive widgets</span>
     </label>
 
-    <div class="section-label">Візуальне спрощення та Bare-Metal UI</div>
+    <div class="section-label" data-i18n="sectionVisual">Visual stripping &amp; Bare-Metal UI</div>
 
     <label class="row">
       <input type="checkbox" id="noFx">
-      <span>Миттєвий UI без тіней, блюру, градієнтів і риплів (Angular-safe)</span>
+      <span data-i18n="optNoFx">Instant UI: no shadows, blur, gradients, or ripples (Angular-safe)</span>
     </label>
 
     <label class="row">
       <input type="checkbox" id="flatUi">
-      <span>Охайний плоский UI (6px скруглень, тонкі рамки 1px)</span>
+      <span data-i18n="optFlatUi">Clean flat UI (6px corners, crisp 1px borders)</span>
     </label>
 
     <label class="row">
       <input type="checkbox" id="compactInput">
-      <span>Компактна нижня панель вводу (без підпису внизу)</span>
+      <span data-i18n="optCompact">Compact bottom input bar (hide footer disclaimer)</span>
     </label>
 
     <label class="row">
       <input type="checkbox" id="wideChat">
-      <span>Широкий режим чату (зручніше для коду й таблиць)</span>
+      <span data-i18n="optWide">Wide chat layout (better for code blocks &amp; tables)</span>
     </label>
 
     <label class="row">
       <input type="checkbox" id="sysFonts">
-      <span>Системні шрифти + блок веб-шрифтів (іконки й KaTeX цілі)</span>
+      <span data-i18n="optSysFonts">System fonts + block web fonts (icons &amp; KaTeX intact)</span>
     </label>
 
     <label class="row">
       <input type="checkbox" id="hideDecor">
-      <span>Приховати декоративні аватари, ілюстрації та Lottie</span>
+      <span data-i18n="optHideDecor">Hide decorative avatars, illustrations &amp; Lottie animations</span>
     </label>
 
     <label class="row">
       <input type="checkbox" id="foldOldTurns">
-      <span>Згортати старі повідомлення у плашки (content-visibility: hidden)</span>
+      <span data-i18n="optFoldOld">Fold older turns into compact bars (content-visibility: hidden)</span>
     </label>
 
     <div class="sub-group" id="foldSubGroup">
       <div class="sub-row">
-        <span>Залишати відкритими:</span>
+        <span data-i18n="optKeepOpen">Keep expanded:</span>
         <select id="keepTurns">
-          <option value="3">Останні 3</option>
-          <option value="6">Останні 6</option>
-          <option value="10">Останні 10</option>
-          <option value="15">Останні 15</option>
+          <option value="3" data-i18n="keep3">Last 3</option>
+          <option value="6" data-i18n="keep6">Last 6</option>
+          <option value="10" data-i18n="keep10">Last 10</option>
+          <option value="15" data-i18n="keep15">Last 15</option>
         </select>
       </div>
       <label class="row">
         <input type="checkbox" id="unfoldOnFind">
-        <span>Авто-розгортати при пошуку Ctrl+F</span>
+        <span data-i18n="optUnfoldFind">Auto-expand folded turns on Ctrl+F search</span>
       </label>
     </div>
   </div>
 
   <div class="stat-box">
-    <div id="dnr-stat">C++ DNR: перевірка…</div>
+    <div id="dnr-stat">C++ DNR: checking…</div>
     <div class="live-row">
-      <span id="live-stat">Вкладка: очікування gemini.google.com</span>
-      <button type="button" class="mini-btn" id="rescanBtn" title="Пересканувати активний чат">Оновити</button>
+      <span id="live-stat">Tab: waiting for gemini.google.com</span>
+      <button type="button" class="mini-btn" id="rescanBtn" data-i18n="btnRescan" title="Rescan active chat">Rescan</button>
     </div>
   </div>
 
-  <div class="reload-hint" id="reloadHint">
-    Мережеві правила шрифтів/Lottie змінено — оновіть вкладку (F5), щоб повністю повернути рідні ресурси.
+  <div class="reload-hint" id="reloadHint" data-i18n="reloadHint">
+    Font/Lottie network rules changed — reload the tab (F5) to fully restore native assets.
   </div>
 
-  <div class="footer">
-    Alt+Shift+E — розгорнути/згорнути історію · 0 фонових процесів.
+  <div class="footer" data-i18n="footer">
+    Alt+Shift+E — toggle history folding · 0 background processes.
   </div>
 
   <script src="popup.js"></script>

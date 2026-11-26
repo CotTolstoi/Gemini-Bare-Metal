@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "Gemini Bare-Metal Lite (Chromium x64)",
+    "description": "Назва розширення"
+  },
+  "extDescription": {
+    "message": "Оптимізатор продуктивності MV3 для gemini.google.com без фонових процесів: режими «Непомітний» і «Bare-Metal», безпечний C++ DNR (BotGuard/WAA захищено), ізоляція content-visibility та захист Canvas і медіа.",
+    "description": "Опис розширення"
+  },
+  "actionTitle": {
+    "message": "Gemini Bare-Metal v5.3",
+    "description": "Підказка іконки на панелі інструментів"
+  }
+}

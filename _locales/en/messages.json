@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "Gemini Bare-Metal Lite (Chromium x64)",
+    "description": "Extension display name"
+  },
+  "extDescription": {
+    "message": "Zero-worker MV3 performance optimizer for gemini.google.com: Stealth & Bare-Metal presets, BotGuard-safe C++ DNR rules, viewport-safe content-visibility, and rich-turn protection.",
+    "description": "Extension description shown in Chrome Extensions and Web Store"
+  },
+  "actionTitle": {
+    "message": "Gemini Bare-Metal v5.3",
+    "description": "Toolbar icon tooltip"
+  }
+}

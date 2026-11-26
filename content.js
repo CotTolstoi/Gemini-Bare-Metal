@@ -1,9 +1,24 @@
 (() => {
   'use strict';
 
-  const STORAGE_KEY = 'gul_v52_settings';
-  const LEGACY_KEYS = ['gul_v51_settings', 'gul_v50_settings', 'gul_v46_settings'];
+  const STORAGE_KEY = 'gul_v53_settings';
+  const LEGACY_KEYS = ['gul_v52_settings', 'gul_v51_settings', 'gul_v50_settings', 'gul_v46_settings'];
   const RECENT_UNCLIPPED_TURNS = 4;
+
+  const I18N = {
+    en: {
+      clickToExpand: '(click to expand)',
+      toolbarTitle: 'Alt+Shift+E — toggle folding older turns',
+      collapseOld: (keep) => `Collapse old (keep ${keep})`,
+      foldedCount: (count) => `Folded: ${count} (show all)`
+    },
+    uk: {
+      clickToExpand: '(натисніть, щоб розгорнути)',
+      toolbarTitle: 'Alt+Shift+E — перемкнути згортання старих повідомлень',
+      collapseOld: (keep) => `Згорнути старі (залишити ${keep})`,
+      foldedCount: (count) => `Згорнуто: ${count} (показати всі)`
+    }
+  };
 
   // Granular protection selectors (never matches standard Gemini action buttons like Copy/Edit/Like)
   const PROTECTED_MEDIA_SELECTOR = [
@@ -86,6 +101,7 @@
   const DEFAULTS = Object.assign(
     {
       enabled: true,
+      language: 'en',
       preset: 'bare-metal',
       protectRichTurns: true,
       unfoldOnFind: true,
@@ -111,6 +127,14 @@
       localStorage.removeItem('gul_ssd_snap_index_v1');
     }
   } catch (_) {}
+
+  function getLangPack() {
+    return settings.language === 'uk' ? I18N.uk : I18N.en;
+  }
+
+  function normalizeLanguage(lang) {
+    return lang === 'uk' ? 'uk' : 'en';
+  }
 
   function detectPreset(s) {
     const names = Object.keys(PRESETS);
@@ -138,6 +162,7 @@
       if (typeof rawObj.blockTelemetry !== 'boolean') merged.blockTelemetry = rawObj.blockNetwork;
       if (typeof rawObj.forceStaticCache !== 'boolean') merged.forceStaticCache = rawObj.blockNetwork;
     }
+    merged.language = normalizeLanguage(merged.language);
     merged.preset = detectPreset(merged);
     return merged;
   }
@@ -226,7 +251,6 @@
   function getTurnProtectionReason(turnEl, activeEl, selAnchorNode) {
     if (!turnEl) return null;
 
-    // 1. Active user focus inside the turn (e.g. editing prompt, interacting with widget)
     if (
       activeEl &&
       activeEl !== document.body &&
@@ -237,27 +261,22 @@
       return 'focus';
     }
 
-    // 2. Active text selection inside the turn
     if (selAnchorNode && turnEl.contains(selAnchorNode)) {
       return 'selection';
     }
 
-    // 3. Video, Audio, YouTube, or embedded Iframe/Object
     if (turnEl.querySelector(PROTECTED_MEDIA_SELECTOR)) {
       return 'media';
     }
 
-    // 4. Canvas, Immersive Artifacts, Deep Research, Code Execution output
     if (turnEl.querySelector(PROTECTED_CANVAS_SELECTOR)) {
       return 'canvas';
     }
 
-    // 5. Interactive widgets, forms, open <details>, prompt editors, charts, quizzes, maps
     if (turnEl.querySelector(PROTECTED_INTERACTIVE_SELECTOR)) {
       return 'interactive';
     }
 
-    // 6. Images still loading or generating inside this turn
     const imgs = turnEl.querySelectorAll('img[src]');
     for (let i = 0; i < imgs.length; i++) {
       if (!imgs[i].complete) {
@@ -325,7 +344,18 @@
     const queryEl = turnEl.querySelector('user-query .query-text, user-query, .query-text');
     const clean = extractBoundedText(queryEl || turnEl, 110);
     const snippet = clean.length > 76 ? clean.slice(0, 76) + '…' : clean;
-    return `[+] #${index + 1}${snippet ? ': ' + snippet : ''} (натисніть, щоб розгорнути)`;
+    const suffix = getLangPack().clickToExpand;
+    return `[+] #${index + 1}${snippet ? ': ' + snippet : ''} ${suffix}`;
+  }
+
+  function refreshFoldBarLabels() {
+    const turns = getTurnContainers();
+    for (let i = 0; i < turns.length; i++) {
+      const bar = turns[i].querySelector(':scope > .gul-fold-bar');
+      if (bar) {
+        bar.textContent = extractPreviewText(turns[i], i);
+      }
+    }
   }
 
   function unfoldTurn(turnEl, markManual) {
@@ -381,17 +411,19 @@
       return;
     }
 
+    const t = getLangPack();
+
     if (!toolbar) {
       toolbar = document.createElement('button');
       toolbar.id = 'gul-fold-toolbar';
       toolbar.type = 'button';
-      toolbar.title = 'Alt+Shift+E — перемкнути згортання старих повідомлень';
       document.body.appendChild(toolbar);
     }
 
+    toolbar.title = t.toolbarTitle;
     toolbar.textContent = allExpandedManually
-      ? `Згорнути старі (залишити ${keep})`
-      : `Згорнуто: ${foldedCount} (показати всі)`;
+      ? t.collapseOld(keep)
+      : t.foldedCount(foldedCount);
   }
 
   function syncRecentTurnMarkers(turns) {
@@ -632,19 +664,33 @@
       settings = migrateSettings(stored);
       cacheSettings(settings);
       applyRootClasses();
-      if (deferredStarted) runDomPass();
+      if (deferredStarted) {
+        runDomPass();
+        refreshFoldBarLabels();
+      }
     });
 
     chrome.storage.onChanged.addListener((changes, area) => {
       if (area !== 'local') return;
+      const langChanged = Boolean(changes.language);
+      let nonLangChanged = false;
       for (const key of Object.keys(changes)) {
-        if (key in DEFAULTS) settings[key] = changes[key].newValue;
+        if (key in DEFAULTS) {
+          settings[key] = changes[key].newValue;
+          if (key !== 'language') nonLangChanged = true;
+        }
       }
+      settings.language = normalizeLanguage(settings.language);
       settings.preset = detectPreset(settings);
       cacheSettings(settings);
-      allExpandedManually = false;
+      if (nonLangChanged) {
+        allExpandedManually = false;
+      }
       applyRootClasses();
-      if (deferredStarted) runDomPass();
+      if (deferredStarted) {
+        runDomPass();
+        if (langChanged) refreshFoldBarLabels();
+      }
     });
   }
 
